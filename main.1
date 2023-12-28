@@ -1,0 +1,57 @@
+#include <iostream>
+#include <map>
+#include <string>
+
+class SimpleLanguageInterpreter {
+private:
+    std::map<std::string, int> variables;
+
+public:
+    void assignVariable(const std::string& variableName, int value) {
+        variables[variableName] = value;
+    }
+
+    int getVariableValue(const std::string& variableName) const {
+        auto it = variables.find(variableName);
+        if (it != variables.end()) {
+            return it->second;
+        }
+        else {
+            std::cerr << "Error: Variable " << variableName << " not found." << std::endl;
+            return 0; // Return a default value if the variable is not found
+        }
+    }
+
+    void print(const std::string& message) const {
+        std::cout << message << std::endl;
+    }
+
+    void executeStatement(const std::string& statement) {
+        // Simplified parsing for demonstration purposes
+        if (statement.substr(0, 5) == "PRINT") {
+            print(statement.substr(6));
+        }
+        else if (statement.find('=') != std::string::npos) {
+            // Assignment statement
+            size_t pos = statement.find('=');
+            std::string variableName = statement.substr(0, pos);
+            int value = std::stoi(statement.substr(pos + 1));
+            assignVariable(variableName, value);
+        }
+        else {
+            std::cerr << "Error: Invalid statement." << std::endl;
+        }
+    }
+};
+
+int main() {
+    SimpleLanguageInterpreter interpreter;
+
+    // Example program
+    interpreter.executeStatement("X = 10");
+    interpreter.executeStatement("PRINT 'The value of X is ' + X");
+    interpreter.executeStatement("Y = 20");
+    interpreter.executeStatement("PRINT 'The sum of X and Y is ' + (X + Y)");
+
+    return 0;
+}
